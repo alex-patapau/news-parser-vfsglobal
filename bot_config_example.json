@@ -1,3 +1,9 @@
 {
-    "TOKEN": "YOUR_TELEGRAM_BOT_TOKEN"
+    "_comment_TOKEN": "Set TELEGRAM_BOT_TOKEN in environment, not in this file",
+    "_comment_MAX_ATTEMPTS": "How many HTTP attempts are made before giving up (minimum 1)",
+    "MAX_ATTEMPTS": 2,
+    "_comment_RETRY_DELAY": "Delay in seconds between HTTP retry attempts (minimum 0)",
+    "RETRY_DELAY": 2,
+    "_comment_REQUEST_TIMEOUT": "HTTP timeout in seconds for each requests.get call (minimum 1)",
+    "REQUEST_TIMEOUT": 20
 }

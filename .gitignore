@@ -1,4 +1,5 @@
 .env
+.venv
 bot_config.json
 latest_news.json
 subscribers.json
