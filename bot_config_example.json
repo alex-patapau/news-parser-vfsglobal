@@ -5,5 +5,13 @@
     "_comment_RETRY_DELAY": "Delay in seconds between HTTP retry attempts (minimum 0)",
     "RETRY_DELAY": 2,
     "_comment_REQUEST_TIMEOUT": "HTTP timeout in seconds for each requests.get call (minimum 1)",
-    "REQUEST_TIMEOUT": 20
+    "REQUEST_TIMEOUT": 20,
+    "_comment_MIN_REQUEST_INTERVAL_SECONDS": "Minimum interval between real network requests. Parser skips runs inside this window to avoid hammering the site",
+    "MIN_REQUEST_INTERVAL_SECONDS": 900,
+    "_comment_CF_COOLDOWN_SECONDS": "Cooldown after an explicit Cloudflare block/403 before any new network request is allowed",
+    "CF_COOLDOWN_SECONDS": 3600,
+    "_comment_PARSER_MODE": "Parser strategy: auto (HTML then API fallback), api (Camouflage API only), html (HTML only)",
+    "PARSER_MODE": "auto",
+    "_comment_DEBUG": "Enable extended technical logs and API payload dump to debug_api_payloads.json",
+    "DEBUG": false
 }

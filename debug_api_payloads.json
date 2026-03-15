@@ -1,0 +1,81 @@
+{
+  "url": "https://visa.vfsglobal.com/blr/ru/pol/",
+  "fetched_payloads": [
+    {
+      "endpoint": "https://d2ab400qlgxn2g.cloudfront.net/dev/spaces/xxg4p8gt3sg6/environments/master/entries?content_type=countryNewsflash&fields.locale=pol%20%3E%20blr%20%3E%20ru%26pol%20%3E%20ru%26ru&order=-sys.updatedAt",
+      "status": 200,
+      "total": 0,
+      "items": 0,
+      "payload": {
+        "sys": {
+          "type": "Array"
+        },
+        "total": 0,
+        "skip": 0,
+        "limit": 100,
+        "items": []
+      }
+    },
+    {
+      "endpoint": "https://d2ab400qlgxn2g.cloudfront.net/dev/spaces/xxg4p8gt3sg6/environments/master/entries?content_type=countryNews&fields.locale=pol%20%3E%20blr%20%3E%20ru%26pol%20%3E%20ru",
+      "status": 200,
+      "total": 0,
+      "items": 0,
+      "payload": {
+        "sys": {
+          "type": "Array"
+        },
+        "total": 0,
+        "skip": 0,
+        "limit": 100,
+        "items": []
+      }
+    },
+    {
+      "endpoint": "https://d2ab400qlgxn2g.cloudfront.net/dev/spaces/xxg4p8gt3sg6/environments/master/entries?content_type=countryNews&fields.locale=pol%20%3E%20blr%20%3E%20ru%26pol%20%3E%20ru&sys.updatedAt%5Bgte%5D=2026-01-11T23%3A00%3A00.000Z",
+      "status": 200,
+      "total": 0,
+      "items": 0,
+      "payload": {
+        "sys": {
+          "type": "Array"
+        },
+        "total": 0,
+        "skip": 0,
+        "limit": 100,
+        "items": []
+      }
+    },
+    {
+      "endpoint": "https://d2ab400qlgxn2g.cloudfront.net/dev/spaces/xxg4p8gt3sg6/environments/master/entries?content_type=countryNews&fields.locale=ru&sys.updatedAt%5Bgte%5D=2026-01-11T23%3A00%3A00.000Z&fields.globalNews=true",
+      "status": 200,
+      "total": 0,
+      "items": 0,
+      "payload": {
+        "sys": {
+          "type": "Array"
+        },
+        "total": 0,
+        "skip": 0,
+        "limit": 100,
+        "items": []
+      }
+    },
+    {
+      "endpoint": "https://d2ab400qlgxn2g.cloudfront.net/dev/spaces/xxg4p8gt3sg6/environments/master/entries?content_type=countryNews&fields.locale=ru&fields.permanent=true&fields.globalNews=true",
+      "status": 200,
+      "total": 0,
+      "items": 0,
+      "payload": {
+        "sys": {
+          "type": "Array"
+        },
+        "total": 0,
+        "skip": 0,
+        "limit": 100,
+        "items": []
+      }
+    }
+  ],
+  "extracted_news": []
+}

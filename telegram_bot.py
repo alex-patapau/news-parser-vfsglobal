@@ -1,33 +1,101 @@
 import json
 import os
 import logging
-from datetime import datetime
+import re
+import importlib
+import importlib.util
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
+
+def load_env_file(env_path):
+    if not os.path.exists(env_path):
+        return
+
+    with open(env_path, "r", encoding="utf-8") as env_file:
+        for raw_line in env_file:
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            if key and key not in os.environ:
+                os.environ[key] = value
+
+
+TOKEN_REGEX = re.compile(r"\b\d{8,}:[A-Za-z0-9_-]{20,}\b")
+
+
+def redact_sensitive(text):
+    return TOKEN_REGEX.sub("<REDACTED_TOKEN>", text)
+
+
+class RedactSensitiveFilter(logging.Filter):
+    def filter(self, record):
+        if isinstance(record.msg, str):
+            record.msg = redact_sensitive(record.msg)
+
+        if isinstance(record.args, tuple):
+            record.args = tuple(
+                redact_sensitive(arg) if isinstance(arg, str) else arg for arg in record.args
+            )
+        elif isinstance(record.args, dict):
+            record.args = {
+                key: redact_sensitive(value) if isinstance(value, str) else value
+                for key, value in record.args.items()
+            }
+
+        return True
+
+
+def load_dotenv_if_available(env_path):
+    if importlib.util.find_spec("dotenv") is None:
+        return False
+
+    dotenv_module = importlib.import_module("dotenv")
+    load_dotenv = getattr(dotenv_module, "load_dotenv", None)
+    if load_dotenv is None:
+        return False
+
+    load_dotenv(env_path)
+    return True
+
 # === Logging ===
-LOG_FILE = "bot.log"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_FILE = os.path.join(BASE_DIR, "bot.log")
 logging.basicConfig(
-    filename=LOG_FILE,
     level=logging.INFO,
     format="%(asctime)s - %(funcName)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
+    datefmt="%Y-%m-%d %H:%M:%S",
+    force=True,
+    handlers=[
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+        logging.StreamHandler(),
+    ],
 )
 
+redact_filter = RedactSensitiveFilter()
+root_logger = logging.getLogger()
+for handler in root_logger.handlers:
+    handler.addFilter(redact_filter)
+
+# Keep third-party transport logs quiet to reduce accidental secret exposure.
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("httpcore").setLevel(logging.WARNING)
+
 # === File paths ===
-CONFIG_FILE = "bot_config.json"
-SUBSCRIBERS_FILE = "subscribers.json"
-NEWS_FILE = "latest_news.json"
+SUBSCRIBERS_FILE = os.path.join(BASE_DIR, "subscribers.json")
+NEWS_FILE = os.path.join(BASE_DIR, "latest_news.json")
 
-# === Load config ===
-if not os.path.exists(CONFIG_FILE):
-    raise FileNotFoundError(f"{CONFIG_FILE} not found! Create it with your bot token.")
+if not load_dotenv_if_available(os.path.join(BASE_DIR, ".env")):
+    logging.warning("python-dotenv is not installed. Use environment export or install: python -m pip install python-dotenv")
+    load_env_file(os.path.join(BASE_DIR, ".env"))
 
-with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-    config = json.load(f)
-TOKEN = config.get("TOKEN")
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not TOKEN:
-    raise ValueError("Bot TOKEN is missing in bot_config.json")
+    raise ValueError("Environment variable TELEGRAM_BOT_TOKEN is missing")
 
 # === Subscribers functions ===
 def load_subscribers():

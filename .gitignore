@@ -4,3 +4,11 @@ bot_config.json
 latest_news.json
 subscribers.json
 *.log
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+build/
+dist/

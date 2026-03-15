@@ -1,17 +1,51 @@
 import requests
-from dotenv import load_dotenv
 import os
+import importlib
+import importlib.util
+
+
+def load_env_file(env_path):
+    if not os.path.exists(env_path):
+        return
+
+    with open(env_path, "r", encoding="utf-8") as env_file:
+        for raw_line in env_file:
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            if key and key not in os.environ:
+                os.environ[key] = value
+
+
+def load_dotenv_if_available(env_path):
+    if importlib.util.find_spec("dotenv") is None:
+        return False
+
+    dotenv_module = importlib.import_module("dotenv")
+    load_dotenv = getattr(dotenv_module, "load_dotenv", None)
+    if load_dotenv is None:
+        return False
+
+    load_dotenv(env_path)
+    return True
 
 # Load .env file
-load_dotenv()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ENV_PATH = os.path.join(BASE_DIR, ".env")
+if not load_dotenv_if_available(ENV_PATH):
+    load_env_file(ENV_PATH)
 
-TOKEN = os.getenv("TELEGRAM_TOKEN")
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 def send_test_message():
     """Send a test message to your Telegram chat."""
     if not TOKEN or not CHAT_ID:
-        print("[ERROR] Missing TELEGRAM_TOKEN or TELEGRAM_CHAT_ID in .env file.")
+        print("[ERROR] Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID in .env file.")
         return
 
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
